@@ -5,7 +5,7 @@ const projectRoutes = require('./routes/project');
 const taskRoutes = require('./routes/task');
 
 app.use(express.json());
-app.use('/users', userRoutes);
+app.use('/auth', userRoutes);
 app.use('/projects', projectRoutes);
 app.use('/tasks', taskRoutes);
 
