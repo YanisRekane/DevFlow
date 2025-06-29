@@ -6,6 +6,7 @@ const getAllProjects = async(req, res) => {
             include: [
                 { 
                     model: User, 
+                    as: 'owner',
                     attributes: ['id', 'username'] 
                 },
                 {

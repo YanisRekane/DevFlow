@@ -35,6 +35,7 @@ const createUser = async(req, res) => {
         const {password : _, ...userdata} = user.toJSON();
         res.status(201).json(userdata);
     } catch (err){
+        console.error("❌ Server error:", err);
         res.status(400).json({error : "server error"});
     }
 }
@@ -56,13 +57,22 @@ const loginUser = async (req, res) => {
     }
 
     // Generate token
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       { userId: user.id, role: user.role }, // payload
       process.env.JWT_SECRET,
       { expiresIn: '1h' } // token expires in 1 hour
     );
 
-    res.status(200).json({ token });
+    const refreshToken = jwt.sign(
+      { id: user.id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    // ✅ Store refresh token (example: DB or in-memory array for now)
+    //refreshTokens.push(refreshToken);
+
+    res.json({ accessToken, refreshToken })
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });

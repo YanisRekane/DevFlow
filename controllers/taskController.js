@@ -67,4 +67,37 @@ const getTask =  async(req, res) => {
     }
 }
 
-module.exports = {getAllTasks, createTask, getTask}
+const getTasksByProject = async (req, res) => {
+  try {
+    const tasks = await Task.findAll({ where: { projectId: req.params.projectId } });
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+const updateTask = async (req, res) => {
+    try{
+        const task = await Task.findByPk(req.params.id)
+        if (!task) return res.status(404).json({error: 'Task not found'});
+
+        await task.update(req.body);
+        res.json(task)
+    } catch (err) {
+        res.status(500).json({error : 'server error'});
+    }
+}
+
+const deleteTask = async (req, res) => {
+    try{
+        const task = await Task.findByPk(req.params.id)
+        if (!task) return res.status(404).json({error: 'Task not found'})
+
+        await task.destroy();
+        res.json('task deleted')
+    } catch (err) {
+        res.status(500).json({error: err.message})
+    }
+}
+
+module.exports = {getAllTasks, createTask, getTask, getTasksByProject, updateTask, deleteTask}
